@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <title></title>
+</head>
+<body>
+<div th:fragment="navbar">
+    <div class="navbar navbar-default navbar-fixed-top" role="navigation">
+        <div class="container-fluid">
+            <div class="navbar-header" >
+                <a class="navbar-brand" th:href="@{/}" >Stroodie</a>
+            </div>
+            <!--<form class="navbar-form navbar-left" role="search">
+                <div class="form-group">
+                    <input type="text" id="search_form" class="form-control" placeholder="Поиск" style="border-radius: 20px;"/>
+                </div>
+                <div class="btn btn-default" onclick="search_by_request()"><span class="glyphicon glyphicon-search"></span></div>
+            </form>-->
+
+            <ul class="nav navbar-nav navbar-right">
+                <li th:if="${isAdmin}" class="clickable"><a th:href="@{/admin}">Администрирование</a></li>
+                <li class="clickable"><a id="notification_popover">
+                    Уведомления <span th:if="${notReadNotifications != 0}" class="badge" th:text="${notReadNotifications}"></span>
+                </a></li>
+                <li class="clickable"><a th:href="@{/profile}">Профиль</a></li>
+                <li class="clickable"><a href="javascript: document.logoutForm.submit();">Выйти</a></li>
+            </ul>
+            <div th:include="fragments/notification_block::notification_block(${notifications})"></div>
+
+            <form name="logoutForm" th:action="@{/logout}" method="post" th:hidden="true">
+                <input type="submit" value="Sign Out"/>
+            </form>
+        </div>
+    </div>
+</div>
+</body>
+</html>

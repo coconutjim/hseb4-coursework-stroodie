@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+</head>
+<body>
+<div th:fragment="message_search(types, participations)">
+    <div class="vertical-align gap-bottom">
+        <button onclick="searchMessages()" id="message_search_button"
+                type="button" class="btn btn-primary">Поиск</button>
+        <span class="gap-left gap-right">по</span>
+        <select id="message_search_select">
+            <option value="text">тексту</option>
+            <option value="user">пользователю</option>
+            <option value="type">типу</option>
+            <option value="date">дате</option>
+        </select>
+        <span class="gap-left"></span>
+        <span class="message_search_text_elem"><input type="text" id="message_search_text" class="form-control" /></span>
+        <span class="message_search_user_elem hidden"><select id="message_search_user">
+            <option th:each="p:${participations}" th:value="${p.getUser().getId()}"
+                    th:text="${p.getUser().getFirstName() + ' ' + p.getUser().getLastName()}"></option>
+        </select></span>
+        <span class="message_search_type_elem hidden"><select id="message_search_type">
+            <option th:each="type:${types}" th:value="${type.id}" th:text="${type.name}"></option>
+        </select></span>
+        <span class="message_search_date_elem gap-right hidden">c</span>
+        <span class="message_search_date_elem input-group date date-picker-block hidden" data-provide="datepicker">
+            <input type="text" id="message_search_date_start" class="form-control date-input"/>
+            <span class="input-group-addon">
+                <span class="glyphicon glyphicon-th"></span>
+            </span>
+        </span>
+        <span class="message_search_date_elem gap-right gap-left hidden">по</span>
+        <span class="message_search_date_elem input-group date date-picker-block hidden" data-provide="datepicker">
+            <input type="text" id="message_search_date_end" class="form-control date-input"/>
+            <span class="input-group-addon">
+                <span class="glyphicon glyphicon-th"></span>
+            </span>
+        </span>
+    </div>
+</div>
+</body>
+</html>

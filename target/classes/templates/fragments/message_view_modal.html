@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+</head>
+<body>
+<div th:fragment="view_modal">
+    <div class="modal fade" id="view_modal" role="dialog" aria-labelledby="modal_label" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                    <div class="message-name" id="view_modal_name"></div>
+                </div>
+                <div class="modal-body" id="view_modal_body">
+                    <div id="view_modal_content"></div>
+                    <hr/>
+                    <div class="message-author" id="view_modal_author"></div>
+                    <div class="text-muted gap-bottom" id="view_modal_created"></div>
+                    <button onclick="scrollToMessage()"
+                            type="button" class="btn btn-primary gap-top">Перейти к сообщению</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

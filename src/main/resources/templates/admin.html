@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <meta name="_csrf" th:content="${_csrf.token}"/>
+    <!-- default header name is X-CSRF-TOKEN -->
+    <meta name="_csrf_header" th:content="${_csrf.headerName}"/>
+
+    <script th:src="@{/js/util/jquery.min.js}"></script>
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" th:href="@{/css/util/bootstrap.min.css}"/>
+    <!-- Latest compiled and minified JavaScript -->
+    <script th:src="@{/js/util/bootstrap.min.js}"></script>
+    <!-- Select 2  -->
+    <link rel="stylesheet" th:href="@{/css/util/select2.min.css}"/>
+    <script th:src="@{/js/util/select2.min.js}"></script>
+
+    <!-- Font awesome -->
+    <link rel="stylesheet" th:href="@{/css/util/font-awesome.min.css}"/>
+
+    <!-- Bootstrap-Iconpicker -->
+    <link rel="stylesheet" th:href="@{/css/util/bootstrap-iconpicker.min.css}"/>
+    <script th:src="@{/js/util/iconset-fontawesome-4.2.0.min.js}" ></script>
+    <script th:src="@{/js/util/bootstrap-iconpicker.min.js}" ></script>
+
+    <link rel="stylesheet" th:href="@{/css/util/awesome-bootstrap-checkbox.css}"/>
+
+    <link rel="stylesheet" th:href="@{/css/general.css}"/>
+    <script th:src="@{/js/general.js}" ></script>
+    <script th:inline="javascript">
+        var tsJSON = [[${typesJSON}]];
+    </script>
+    <script th:src="@{/js/admin.js}" ></script>
+
+    <title>Stroodie</title>
+</head>
+<body>
+<div th:include="fragments/navbar::navbar"></div>
+    <div class="container">
+        <div th:if="${param.success}" class="row">
+            <div class="col-sm-5 well success-div">Операция успешно завершена</div>
+        </div>
+        <h1>Семинары</h1>
+        <div th:include="fragments/seminar_editor::seminar_editor(null)"></div>
+        <div class="row vertical-align gap-top" th:each="seminar:${seminars}">
+            <div class="col-sm-3" ><a th:href="@{/seminar/{id}(id=${seminar.id})}" th:text="${seminar.name}" ></a></div>
+            <div class="col-sm-1" th:include="fragments/seminar_editor::seminar_editor(${seminar})"></div>
+            <div class="col-sm-1">
+                <button th:onclick="'seminar_crud(\'delete\'' + ',' + ${seminar.id} + ',false);'"
+                        type="button" class="btn btn-danger"><span class="glyphicon glyphicon-trash"></span></button>
+            </div>
+        </div>
+
+        <h1>Пользователи</h1>
+        <div class="row">
+            <div id="role_fb" class="col-sm-5 well errors-div hidden"></div>
+        </div>
+        <div class="row vertical-align">
+            <div class="col-sm-5"><select id="all_users_select" style="width: 100%">
+                <option th:each="user:${users}" th:attr="id=${user.id}, data-admin=${user.isAdmin()}"
+                        th:text="${user.firstName + ' ' + user.lastName + ' (' + user.email + ')'}"></option>
+            </select></div>
+            <div class="col-sm-7">
+                <span class="checkbox checkbox-primary inline-elem">
+                    <input class="styled" type="checkbox" id="admin_checkbox"/>
+                    <label for="admin_checkbox">Администратор</label>
+                </span>
+                <span class="gap-left"></span>
+                <button id="change_role_button" type="button"
+                        class="btn btn-primary" onclick="change_role();">Изменить</button>
+            </div>
+        </div>
+    </div>
+<span th:include="fragments/go_top_element::go_top"></span>
+</body>
+</html>

@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+</head>
+<body>
+<div th:fragment="union_menu(unions)">
+    <div id="union_menu" class="hidden">
+        <div th:if="${unions == null or unions.isEmpty()}">Объединения отсутствуют</div>
+        <div th:if="${unions != null and !unions.isEmpty()}">
+            <div th:each="union:${unions}" class="row gap-top">
+                <div class="col-sm-8" th:text="${union.name}"></div>
+                <div class="col-sm-1">
+                    <div th:include="fragments/union_editor::union_editor(${union})"></div>
+                </div>
+                <div class="col-sm-1">
+                    <button th:onclick="'union_crud(\'delete\'' + ',' + ${union.id} + ');'"
+                            type="button" class="btn btn-danger btn-xs"><span class="glyphicon glyphicon-trash"></span></button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

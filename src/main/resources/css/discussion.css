@@ -1,0 +1,114 @@
+#message_search_select {
+    width: 130px;
+}
+
+#message_search_user, #message_search_type {
+    width: 200px;
+}
+
+.select2-container .select2-selection--single {
+    box-sizing: border-box;
+    cursor: pointer;
+    display: block;
+    height: 34px;
+    user-select: none;
+    -webkit-user-select: none;
+}
+
+.select2-container--default .select2-selection--single .select2-selection__rendered {
+    color: #444;
+    line-height: 32px;
+}
+
+.select2-container--default .select2-selection--single .select2-selection__arrow {
+    height: 32px;
+    position: absolute;
+    top: 1px;
+    right: 1px;
+    width: 20px;
+}
+
+#message_search_text {
+    width: 200px;
+}
+
+.date-picker-block {
+    width: 140px;
+}
+
+.datepicker table tr td.active.active {
+    background: none !important;
+    background-color: #483D8B !important;
+}
+
+#message_search_result {
+    font-size: 20px;
+    padding-bottom: 5px;
+}
+
+.primary-tooltip + .tooltip.top > .tooltip-inner {
+    background-color: #1C125A;
+}
+.primary-tooltip + .tooltip.top > .tooltip-arrow {
+    border-top-color: #1C125A;
+}
+
+.message-name {
+    font-size: 25px;
+    font-weight: bold;
+}
+
+.message-author {
+    font-size: 20px;
+    font-style: italic;
+
+}
+
+#graph_tooltip {
+    position: absolute;
+}
+
+#mes_editor {
+    background-color: rgba(147, 140, 197, 0.7);
+}
+
+#mes_editor_title {
+    font-size: 20px;
+    font-weight: bold;
+}
+
+.btn-sq {
+    width: 70px !important;
+    height: 70px !important;
+    font-size: 40px;
+}
+
+.btn-sq-xs {
+    width: 20px !important;
+    height: 20px !important;
+    font-size: 10px;
+}
+
+body .popover {
+    width: 250px;
+    max-width: none;
+}
+
+.author-popover {
+    cursor: pointer;
+}
+
+#close_unions_block {
+    padding-left: 0;
+}
+
+.modal {
+    /* fixes bug but needs considering */
+    overflow: auto !important;
+}
+
+.thesaurus-name {
+    font-style: italic;
+    font-weight: bold;
+    font-size: 19px;
+}

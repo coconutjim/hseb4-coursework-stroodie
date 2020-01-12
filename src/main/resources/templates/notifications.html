@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <script th:src="@{/js/util/jquery.min.js}"></script>
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" th:href="@{/css/util/bootstrap.min.css}"/>
+    <!-- Latest compiled and minified JavaScript -->
+    <script th:src="@{/js/util/bootstrap.min.js}"></script>
+
+    <link rel="stylesheet" th:href="@{/css/general.css}"/>
+    <script th:src="@{/js/general.js}" ></script>
+
+    <title>Stroodie</title>
+</head>
+<body>
+<div th:include="fragments/navbar::navbar"></div>
+<div class="container">
+    <h1 class="text-center">Уведомления</h1>
+
+    <div th:if="${notifications!=null and ! notifications.isEmpty()}"><div class="row">
+        <div class="col-sm-6 col-sm-offset-3">
+
+            <div class="row" th:each="notification:${notifications}">
+                <div class="col-sm-12">
+                    <a th:href="@{/{url}(url=${notification.getUrl()})}" class="no-dec-link">
+                        <div th:attr="class=${'well clearfix notification-item' + (notification.isRead() ? '' : ' notification-unseen')}">
+                            <div class="bold-text" th:text="${notification.getParsedDate()}"></div>
+                            <div th:text="${notification.getContent()}"></div>
+                        </div>
+                    </a>
+                </div>
+            </div>
+
+        </div>
+    </div></div>
+
+    <div th:if="${notifications==null or notifications.isEmpty()}" class="text-center">
+        <h4>Уведомления отсутствуют</h4>
+    </div>
+
+</div>
+<span th:include="fragments/go_top_element::go_top"></span>
+</body>
+</html>

@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+</head>
+<body>
+<div th:fragment="message_editor(disId)">
+    <div class="navbar-fixed-bottom col-sm-8 col-sm-offset-2">
+        <div class="navbar-inner">
+            <div>
+                <div id="mes_editor" class="well clearfix hidden"
+                     data-mode="" data-mesId="" data-prevId="" data-typeId="">
+                    <div id="mes_editor_title"></div>
+
+                    <div class="row gap-top">
+                        <div class="col-sm-12">
+                            <div id="mes_editor_sn"></div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <div id="mes_editor_fb" class="well errors-div hidden"></div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-sm-12 text-right">
+                            <button type="button" class="btn btn-primary"
+                                    th:onclick="'message_cu(' + ${disId} + ');'">Сохранить</button>
+                            <span style="padding-left: 5px;"></span>
+                            <button type="button" class="btn btn-primary" onclick="hide_editor();">Скрыть</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <meta name="_csrf" th:content="${_csrf.token}"/>
+    <!-- default header name is X-CSRF-TOKEN -->
+    <meta name="_csrf_header" th:content="${_csrf.headerName}"/>
+
+    <script th:src="@{/js/util/jquery.min.js}"></script>
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" th:href="@{/css/util/bootstrap.min.css}"/>
+    <!-- Latest compiled and minified JavaScript -->
+    <script th:src="@{/js/util/bootstrap.min.js}"></script>
+
+    <link rel="stylesheet" th:href="@{/css/general.css}"/>
+    <script th:src="@{/js/general.js}" ></script>
+
+    <script th:src="@{/js/profile.js}" ></script>
+
+    <title>Stroodie</title>
+</head>
+<body>
+<div th:include="fragments/navbar::navbar"></div>
+<h1 class="text-center">Ваш профиль</h1>
+<div class="container">
+    <div th:if="${param.success}" class="row">
+        <div class="col-sm-4 col-sm-offset-4 well success-div text-center">Изменения успешно сохранены</div>
+    </div>
+    <div class="row">
+        <div class="col-sm-6 col-sm-offset-3 text-center">
+            <div><b>Email: </b><span th:text="${currUser.email}"></span></div>
+            <div><b>Имя: </b><span th:text="${currUser.firstName}"></span></div>
+            <div><b>Фамилия: </b><span th:text="${currUser.lastName}"></span></div>
+            <div class="gap-top"></div>
+            <div th:include="fragments/user_editor::user_editor(${currUser})"></div>
+            <div class="small-gap-top"></div>
+            <div th:include="fragments/user_password_editor::password_editor"></div>
+        </div>
+    </div>
+</div>
+<span th:include="fragments/go_top_element::go_top"></span>
+</body>
+</html>

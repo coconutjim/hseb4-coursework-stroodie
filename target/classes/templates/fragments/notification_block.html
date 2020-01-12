@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+</head>
+<body>
+<div th:fragment="notification_block(notifications)">
+    <div id="notification_block" class="hidden">
+        <div id="notification_content">
+            <div th:if="${notifications == null or notifications.isEmpty()}">Новых уведомлений нет</div>
+            <div th:if="${notifications != null and !notifications.isEmpty()}">
+                <div th:each="notification, nStat:${notifications}" class="row" th:if="${nStat.index &lt; 3}">
+                    <div class="col-sm-12">
+                        <a th:href="@{/{url}(url=${notification.getUrl()})}" class="no-dec-link">
+                            <div th:attr="class=${'well clearfix notification-item notification-small' +
+                                    (notification.isRead() ? '' : ' notification-unseen')}">
+                                <div class="notification-date-small-text" th:text="${notification.getParsedDate()}"></div>
+                                <div class="notification-main-small-text"
+                                     th:text="${notification.getContent()}"></div>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+                <div class="text-center"><a th:href="@{/notifications}">Показать все</a></div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

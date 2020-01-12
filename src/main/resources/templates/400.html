@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <script th:src="@{/js/util/jquery.min.js}"></script>
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" th:href="@{/css/util/bootstrap.min.css}"/>
+    <!-- Latest compiled and minified JavaScript -->
+    <script th:src="@{/js/util/bootstrap.min.js}"></script>
+
+    <link rel="stylesheet" th:href="@{/css/general.css}"/>
+    <script th:src="@{/js/general.js}" ></script>
+
+    <title>Stroodie</title>
+</head>
+<body>
+<div th:include="fragments/navbar::navbar"></div>
+<div class="col-sm-8 col-sm-offset-2">
+    <div class="text-center">
+        <h1>Bad request (400)</h1>
+        <button type="button" class="btn btn-primary btn-lg" onclick="history.go(-1);return true;">Назад</button>
+    </div>
+</div>
+<span th:include="fragments/go_top_element::go_top"></span>
+</body>
+</html>

@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+</head>
+<body>
+<div th:fragment="union_editor(union)">
+    <div class="inline-elem" th:with="label_text=${union==null ? 'Создание нового объединения' : 'Изменение объединения ' + union.name},
+        main_id_text=${union==null ? 'editor_union_new' : 'editor_union_' + union.id},
+        id_text=${union==null ? 'new' : union.id}">
+
+    <!-- Кнопка вызова редактора -->
+    <div th:if="${union == null}"><button type="button" th:attr="id=${'editor_union_button_' + id_text},
+            data-target=${'#' + main_id_text}" class="btn btn-primary hidden inline-elem"
+            data-toggle="modal">
+        Сохранить объединение
+    </button></div>
+    <div th:if="${union != null}"><button type="button" th:attr="id=${'editor_union_button_' + id_text},
+            data-target=${'#' + main_id_text}" class="btn btn-primary btn-xs inline-elem"
+            data-toggle="modal">
+        <span class="glyphicon glyphicon-edit"></span>
+    </button></div>
+
+    <!-- Модальное окно редактора -->
+    <div class="modal fade" th:attr="id=${main_id_text}" role="dialog" aria-labelledby="modal_label" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content text-left">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                    <h3 class="modal-title" th:attr="id=${'modal_label_union' + id_text}" th:text="${label_text}"></h3>
+                </div>
+                <div class="modal-body">
+                    <label th:for="${'union_name_' + id_text}">Имя объединения:</label>
+                    <input type="text" th:attr="id=${'union_name_' + id_text}"
+                           class="form-control" th:value="${union == null ? '' : union.name}"
+                           th:placeholder="${'Имя (от ' + (T(controllers.Validation).UNION_NAME_MIN_LENGTH) + ' до ' + (T(controllers.Validation).UNION_NAME_MAX_LENGTH)} + ' символов)'" />
+                    <div class="gap-top"></div>
+                    <div th:attr="id=${'union_fb_' + id_text}" class="well errors-div hidden"></div>
+                    <button th:onclick="'union_crud(\'' + ${union==null? 'create' : 'update'} + '\'' + ',\'' + ${id_text} + '\');'"
+                            type="button" class="btn btn-primary">Сохранить</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    </div>
+</div>
+</body>
+</html>

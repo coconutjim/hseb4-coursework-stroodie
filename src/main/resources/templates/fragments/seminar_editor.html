@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+</head>
+<body>
+<div th:fragment="seminar_editor(seminar)">
+    <div th:with="label_text=${seminar==null ? 'Создание нового семинара' : 'Изменение семинара ' + seminar.name},
+        main_id_text=${seminar==null ? 'editor_seminar_new' : 'editor_seminar_' + seminar.id},
+        id_text=${seminar==null ? 'new' : seminar.id},
+        canChangeOnt=${seminar==null or seminar.canChangeOntology()}">
+
+    <!-- Кнопка вызова редактора -->
+    <button type="button" class="btn btn-primary" data-toggle="modal" th:attr="data-target=${'#' + main_id_text}">
+        <span th:attr="class=${'glyphicon glyphicon-' + (seminar==null ? 'plus' : 'edit')}"></span>
+    </button>
+
+    <!-- Модальное окно редактора -->
+    <div class="modal fade" th:attr="id=${main_id_text}" role="dialog" aria-labelledby="modal_label" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                    <h3 class="modal-title" th:attr="id=${'modal_label_seminar_' + id_text}" th:text="${label_text}"></h3>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label th:attr="for=${'sem_name_' + id_text}">Имя семинара:</label>
+                        <input type="text" class="form-control" th:attr="id=${'sem_name_' + id_text},
+                        value=${seminar==null ? '' : seminar.name}"
+                               th:placeholder="${'от ' + (T(controllers.Validation).SEMINAR_NAME_MIN_LENGTH) + ' до ' + (T(controllers.Validation).SEMINAR_NAME_MAX_LENGTH)} + ' символов'" />
+                        <div class="gap-top"></div>
+                        <label th:attr="for=${'sem_descr_' + id_text}">Описание семинара:</label>
+                        <input type="text" class="form-control" th:attr="id=${'sem_descr_' + id_text},
+                        value=${seminar==null ? '' : (seminar.description == null ? '' : seminar.description)}"
+                               th:placeholder="${'от ' + (T(controllers.Validation).SEMINAR_DESCR_MIN_LENGTH) + ' до ' + (T(controllers.Validation).SEMINAR_DESCR_MAX_LENGTH)} + ' символов'" />
+
+                        <label class="gap-top" th:attr="for=${'all_users_' + id_text}">Участники семинара:</label>
+                        <div class="row vertical-align">
+                            <div class="col-sm-9"><select class="user-select" th:attr="id=${'all_users_' + id_text}" style="width: 100%">
+                                <option th:each="user:${users}" th:attr="id=${user.id}" th:text="${user.firstName + ' ' + user.lastName + ' (' + user.email + ')'}"></option>
+                            </select></div>
+                            <div class="col-sm-1"><button th:attr="id=${'btn_add_user_' + id_text}"
+                                    th:onclick="'add_user(\'' + ${id_text} + '\',\'' + ${rolesJSON} + '\');'"
+                                    type="button" class="btn btn-primary">
+                                <span class="glyphicon glyphicon-plus"></span>
+                            </button></div>
+                        </div>
+
+                        <div class="sem-users" th:attr="id=${'sem_users_' + id_text}">
+                            <div th:if="${seminar!=null and seminar.participations!=null}"><div th:each="particip:${seminar.participations}"
+                                 th:attr="class=${'row gap-top vertical-align sem-user-' + id_text},
+                                 id=${'sem_user_' + id_text + '_' + particip.user.id},
+                                 data-id=${particip.user.id}">
+                                <div class='col-sm-5' th:text="${particip.user.firstName + ' ' + particip.user.lastName}"></div>
+                                <div class='col-sm-4'>
+                                    <select th:attr="id=${'sem_role_' + id_text + '_' + particip.user.id}" class="role-select" style="width: 100%">
+                                       <option th:each="role:${roles}" th:selected="${particip.seminarRole.toString() == role.toString()}" th:text="${role}"></option>
+                                    </select>
+                                </div>
+                                <div class='col-sm-1'>
+                                    <button type="button" class="btn btn-danger"
+                                            th:attr="id=${'btn_remove_user_' + id_text + '_' + particip.user.id}"
+                                            th:onclick="'remove_user(\'' + ${id_text} + '\',' + ${particip.user.id} + ');'">
+                                        <span class="glyphicon glyphicon-trash"></span>
+                                    </button>
+                                </div>
+                            </div></div>
+                        </div>
+
+                        <div>
+                            <h2>Онтология</h2>
+                            <div class="row">
+                                <div class="col-sm-12">
+                                    <label>Типы:</label>
+                                    <div class="row" th:if="${canChangeOnt}">
+                                        <div class="col-sm-5"><input type="text" class="form-control" th:attr="id=${'new_type_' + id_text}"
+                                                                     th:placeholder="${'от ' + (T(controllers.Validation).TYPE_NAME_MIN_LENGTH) + ' до ' + (T(controllers.Validation).TYPE_NAME_MAX_LENGTH)} + ' символов'" /></div>
+                                        <div class="col-sm-2"><button th:attr="id=${'btn_add_type_' + id_text}"
+                                                th:onclick="'add_type(\'' + ${id_text} + '\');'"
+                                                type="button" class="btn btn-primary">
+                                            <span class="glyphicon glyphicon-plus"></span></button></div>
+                                        <div class="col-sm-2"><button th:attr="id=${'btn_set_ibis_' + id_text}"
+                                                                      th:onclick="'set_ibis(\'' + ${id_text} + '\');'"
+                                                                      type="button" class="btn btn-primary">
+                                            IBIS</button></div>
+                                    </div>
+
+                                    <div class="sem-types" th:attr="id=${'sem_types_' + id_text}">
+                                        <div th:if="${seminar!=null and seminar.types != null}"><div th:each="type:${seminar.types}"
+                                             th:attr="class=${'row vertical-align gap-top sem-type-' + id_text},
+                                             id=${'sem_type_' + id_text + '_' + type.id},
+                                             data-id=${type.id},
+                                             data-name=${type.name}">
+                                            <div class="col-sm-5" th:text="${type.name}"></div>
+                                            <div class="col-sm-2" th:if="${canChangeOnt}">
+                                                <button class="btn btn-default iconpicker" th:attr="id=${'sem_icon_' + id_text + '_' + type.id}"></button>
+                                            </div>
+                                            <div class="col-sm-2" th:if="${!canChangeOnt}">
+                                                <span th:attr="class=${type.iconName}"></span>
+                                            </div>
+                                            <div class="col-sm-2" th:if="${canChangeOnt}">
+                                                <button type="button" class="btn btn-danger"
+                                                        th:attr="id=${'btn_remove_type_' + id_text + '_' + type.id}"
+                                                        th:onclick="'remove_type(\'' + ${id_text} + '\',\'' + ${type.id} + '\');'">
+                                                    <span class="glyphicon glyphicon-trash"></span>
+                                                </button>
+                                            </div>
+                                        </div></div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row gap-top">
+                                <div class="col-sm-12">
+                                    <label>Связи:</label>
+                                    <div class="row vertical-align" th:if="${canChangeOnt}">
+                                        <div class="col-sm-4"><select class="type-select" th:attr="id=${'sem_connections_1_' + id_text}" style="width: 100%">
+                                            <div th:if="${seminar!=null and seminar.types!=null}">
+                                                <option th:each="type:${seminar.types}"
+                                                        th:attr="id=${'sem_cns_1_' + id_text + '_' + type.id},
+                                                        data-id=${type.id}"
+                                                        th:text="${type.name}"></option></div>
+                                        </select></div>
+                                        <div class="col-sm-1"><b>-></b></div>
+                                        <div class="col-sm-4"><select class="type-select" th:attr="id=${'sem_connections_2_' + id_text}" style="width: 100%">
+                                            <div th:if="${seminar!=null and seminar.types!=null}">
+                                                <option th:each="type:${seminar.types}"
+                                                        th:attr="id=${'sem_cns_2_' + id_text + '_' + type.id},
+                                                        data-id=${type.id}"
+                                                        th:text="${type.name}"></option></div>
+                                        </select></div>
+                                        <div class="col-sm-1"><button th:attr="id=${'btn_add_connection_' + id_text}"
+                                                th:onclick="'add_connection(\'' + ${id_text} + '\');'"
+                                                type="button" class="btn btn-primary">
+                                            <span class="glyphicon glyphicon-plus"></span></button></div>
+                                    </div>
+
+                                    <div class="sem-connections" th:attr="id=${'sem_connections_' + id_text}">
+                                        <div th:if="${seminar!=null and seminar.connections!=null}"><div th:each="connection:${seminar.connections}"
+                                             th:attr="class=${'row gap-top vertical-align sem-connection-' + id_text},
+                                             id=${'sem_connection_' + id_text + '_' + connection.typeFrom.id + '_' + connection.typeTo.id},
+                                             data-type1id=${connection.typeFrom.id},
+                                             data-type2id=${connection.typeTo.id},
+                                             data-type1name=${connection.typeFrom.name},
+                                             data-type2name=${connection.typeTo.name}">
+                                            <div class="col-sm-4" th:text="${connection.typeFrom.name}"></div>
+                                            <div class="col-sm-1"><b>-></b></div>
+                                            <div class="col-sm-4" th:text="${connection.typeTo.name}"></div>
+                                            <div class="col-sm-1" th:if="${canChangeOnt}">
+                                                <button type="button" class="btn btn-danger"
+                                                        th:attr="id=${'btn_remove_connection_' + id_text + '_' + connection.typeFrom.id + '_' + connection.typeTo.id}"
+                                                        th:onclick="'remove_connection(\'' + ${id_text} + '\',\'' + ${connection.typeFrom.id} + '\',\'' + ${connection.typeTo.id} + '\');'">
+                                                    <span class="glyphicon glyphicon-trash"></span>
+                                                </button>
+                                            </div>
+                                        </div></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="well errors-div hidden" th:attr="id=${'sem_fb_' + id_text}"></div>
+
+                    </div>
+                    <button th:onclick="'seminar_crud(\'' + ${seminar==null? 'create' : 'update'} + '\'' + ',\'' + ${id_text} + '\',' + ${canChangeOnt} + ');'"
+                            type="button" class="btn btn-primary">Сохранить</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    </div>
+</div>
+</body>
+</html>

@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <meta name="_csrf" th:content="${_csrf.token}"/>
+    <!-- default header name is X-CSRF-TOKEN -->
+    <meta name="_csrf_header" th:content="${_csrf.headerName}"/>
+
+    <script th:src="@{/js/util/jquery.min.js}"></script>
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" th:href="@{/css/util/bootstrap.min.css}"/>
+    <!-- Latest compiled and minified JavaScript -->
+    <script th:src="@{/js/util/bootstrap.min.js}"></script>
+    <!-- Select 2  -->
+    <link rel="stylesheet" th:href="@{/css/util/select2.min.css}"/>
+    <script th:src="@{/js/util/select2.min.js}"></script>
+    <!-- Summernote -->
+    <link rel="stylesheet" th:href="@{/css/util/summernote.css}"/>
+    <script th:src="@{/js/util/summernote.min.js}"></script>
+    <script th:src="@{/js/util/summernote-ru-RU.js}"></script>
+
+    <!-- Font awesome -->
+    <link rel="stylesheet" th:href="@{/css/util/font-awesome.min.css}"/>
+
+    <!--  Graph -->
+    <script th:src="@{/js/util/arbor.js}" ></script>
+    <script th:src="@{/js/util/graphics.js}" ></script>
+    <script th:src="@{/js/util/renderer.js}" ></script>
+
+    <script th:inline="javascript">
+        var msJSON = [[${messagesJSON}]];
+        var isDisMaster = [[${isDisMaster}]];
+    </script>
+    <script th:src="@{/js/graph.js}" ></script>
+
+    <link rel="stylesheet" th:href="@{/css/util/bootstrap-datepicker.min.css}"/>
+    <script th:src="@{/js/util/bootstrap-datepicker.min.js}" ></script>
+
+    <link rel="stylesheet" th:href="@{/css/general.css}"/>
+    <script th:src="@{/js/general.js}" ></script>
+    <link rel="stylesheet" th:href="@{/css/discussion.css}"/>
+    <script th:src="@{/js/discussion.js}" ></script>
+
+    <!-- Timeline -->
+    <link rel="stylesheet" th:href="@{/css/timeline.css}"/>
+
+    <title>Stroodie</title>
+</head>
+<body>
+<i id="graph_tooltip" data-toggle="tooltip" data-placement="top" class="primary-tooltip"
+   title="" data-animation="false" data-trigger="manual" ></i>
+<div th:include="fragments/navbar::navbar"></div>
+<div th:include="fragments/message_view_modal::view_modal"></div>
+<div class="container-fluid">
+    <a th:href="@{/seminar/{id}(id=${discussion.seminar.id})}" th:text="${'К семинару '  + discussion.seminar.name}"></a>
+    <h1 id="dis_name_title" class="text-center" th:text="${discussion.name}"></h1>
+
+    <div class="row">
+        <div class="col-sm-8 col-sm-offset-2">
+            <div th:if="${discussion.master != null or (discussion.description != null and ! discussion.description.isEmpty())}">
+                <div class="text-center gap-bottom">
+                    <a href="#info_block"  data-toggle="collapse">Информация</a>
+                </div>
+            </div>
+            <div id="info_block" class="collapse">
+                <div th:if="${discussion.description != null and ! discussion.description.isEmpty()}">
+                    <b>Описание:</b> <span th:text="${discussion.description}"></span>
+                </div>
+                <div th:if="${discussion.master != null}" class="gap-bottom">
+                    <b>Руководитель дискуссии: </b><span
+                        th:text="${discussion.master.firstName + ' ' + discussion.master.lastName}"></span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-sm-8 col-sm-offset-2">
+            <div th:attr="class=${(discussion.messages!=null and discussion.messages.size() > 1) ? '' : 'hidden'}">
+                <div class="well">
+                    <div th:include="fragments/message_search::message_search(${discussion.seminar.getTypes()},
+                        ${discussion.seminar.getParticipations()})"></div>
+
+                    <div id="search_row" class="row vertical-align gap-bottom text-center hidden"><div class="col-sm-12">
+                        <span id="message_search_result" class="gap-right"></span>
+                        <button id="close_search_button" type="button" class="btn btn-danger btn-xs" onclick="cancelSearch()">
+                            <span class="glyphicon glyphicon-remove"></span>
+                        </button>
+                    </div></div>
+
+                    <div id="cnv_wrap"><canvas width="800" height="300" id="viewport"></canvas></div>
+
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <button onclick="reformGraph()" id="reform_graph_button" style="width: 147px;"
+                                    type="button" class="btn btn-primary">Перестроить граф</button>
+                            <button onclick="fixGraph()" id="fix_graph_button"
+                                    type="button" class="btn btn-primary">Сохранить граф</button>
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="row">
+                                <div class="col-sm-12 text-right">
+                                    <div class="inline-elem" th:include="fragments/union_editor::union_editor(null)"></div>
+                                    <div th:attr="class=${'inline-elem' + ((isDisMaster and unions != null and ! unions.isEmpty()) ? '' : ' hidden')}">
+                                        <button id="union_menu_popover" type="button" class="btn btn-primary"
+                                                data-toggle="popover" data-placement="top" data-animation="true">
+                                            <span class="glyphicon glyphicon-cog"></span>
+                                        </button>
+                                        <div class="inline-elem"  th:include="fragments/union_menu::union_menu(${unions})"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-sm-2" id="close_unions_block">
+        </div>
+
+    </div>
+
+    <div class="row">
+        <div class="col-sm-8 col-sm-offset-2">
+            <div th:attr="class=${((discussion.thesaurus != null and !discussion.thesaurus.isEmpty()) or isDisMaster) ? '' : 'hidden'}">
+                <div class="text-center gap-bottom">
+                    <a href="#thesaurus_block"  data-toggle="collapse">Словарь дискуссии</a>
+                </div>
+                <div id="thesaurus_block" class="collapse">
+                    <div th:include="fragments/thesaurus_block::thesaurus_block(${discussion.thesaurus}, ${isDisMaster})"></div>
+                </div>
+            </div>
+
+            <div th:if="${discussion.messages==null or (discussion.messages!=null and discussion.messages.isEmpty()) and isDisMaster}"><div
+                    id="dis_start_button" class="text-center">
+                <button th:onclick="'show_editor(\'create\',\'null\',\'null\',\'null\',\'null\',\'null\');'"
+                        type="button" class="btn btn-primary">Начать дискуссию</button>
+            </div></div>
+        </div>
+    </div>
+
+    <div th:if="${discussion.messages!=null and ! discussion.messages.isEmpty()}">
+        <div id="message_container" class="container">
+            <ul th:each="message,i:${discussion.messages}" class="timeline">
+                <li th:attr="id=${'message_' + message.id}, class=${(i.index mod 2)==0 ? '' : 'timeline-inverted'}"
+                        th:with="mesName=${'#' + (i.index + 1)}">
+                    <div th:attr="id=${'mes_type_' + message.id}, data-first=${message.first},
+                         data-id=${message.first? '' : message.type.id}"
+                         class="timeline-badge primary-tooltip type-tooltip" th:style="${'background-color:' + message.color}"
+                         data-toggle="tooltip" data-placement="top"
+                         th:title="${message.first? 'Начало дискуссии' : message.type.name}"
+                         data-animation="true">
+                        <i th:attr="class=${message.first ? '' : message.type.iconName}"></i>
+                    </div>
+                    <div class="timeline-panel">
+                        <div class="timeline-heading">
+                            <h4 th:attr="id=${'mes_name_' + message.id}" class="timeline-title" th:text="${mesName}"></h4>
+                        </div>
+                        <div class="timeline-body message-content-div">
+                            <div th:if="${message.needsToBeTruncated()}">
+                                <div class="message-truncated-content" th:text="${message.getTruncatedText()}"></div>
+                            </div>
+                            <div th:attr="id=${'mes_content_' + message.id}" class="message-content" th:utext="${message.content}"></div>
+                        </div>
+
+                        <hr/>
+                        <div><span th:attr="id=${'mes_author_' + message.id},data-content=${message.author.email}" data-toggle="popover" title="Email" data-placement="top"
+                             th:text="${message.author.firstName + ' ' + message.author.lastName}"
+                             class="message-author author-popover"></span></div>
+                        <div>
+                            <span class="text-muted" th:attr="id=${'mes_created_' + message.id}" th:text="${message.getParsedCreated()}"></span>
+                            <span th:if="${message.updater!=null}">
+                                <span style="padding-right: 5px"></span>
+                                <span class="glyphicon glyphicon-edit primary-color primary-tooltip updated-tooltip"
+                                      data-toggle="tooltip" data-placement="top"
+                                      th:title="${'Изменено пользователем ' + message.updater.firstName + ' ' + message.updater.lastName + ' ' + message.getParsedUpdated()}"
+                                      data-animation="true">
+                                </span>
+                            </span>
+                        </div>
+
+                        <div class="row vertical-align">
+                            <div class="col-sm-6">
+                                <a href="#"
+                                   th:onclick="'showMessageOnGraph(' + ${message.getUid()} + ',' + ${(i.index + 1)} + ');return false;'">
+                                    Показать на графе</a>
+                            </div>
+                            <div class="col-sm-6 text-right">
+                                <div class="inline-elem" th:if="${message.canBeAnswered(curParticip)}">
+                                    <div class="inline-elem" th:include="fragments/type_select_modal::type_select(${discussion.id}, ${message.id}, ${mesName},
+                                ${discussion.seminar.getPossibleTypes(message, 4)})"></div>
+                                </div>
+                                <button th:if="${message.canBeUpdated(curParticip)}"
+                                        th:onclick="'show_editor(\'update\',\'' + ${message.id} + '\',\'' +
+                                ${message.previous==null ? 'null' : message.previous.id} + '\',\'null\',\'null\',\'' + ${mesName} + '\');'"
+                                        type="button" class="btn btn-primary"><span class="glyphicon glyphicon-edit"></span></button>
+
+                                <button th:if="${message.canBeDeleted(curParticip)}"
+                                        th:onclick="'delete_message(' + ${discussion.id} +  ',' + ${message.id} + ');'"
+                                        type="button" class="btn btn-danger"><span class="glyphicon glyphicon-trash"></span></button>
+                                <span style="margin-right: 10px"></span>
+                            </div>
+                        </div>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </div>
+
+    <div th:include="fragments/message_editor::message_editor(${discussion.id})"></div>
+</div>
+<span th:include="fragments/go_top_element::go_top"></span>
+</body>
+</html>

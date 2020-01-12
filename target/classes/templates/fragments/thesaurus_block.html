@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+</head>
+<body>
+<div th:fragment="thesaurus_block(thesaurus, isDisMaster)">
+    <div th:if="${isDisMaster}" class="text-center">
+        <div th:include="fragments/thesaurus_editor::thesaurus_editor(null)"></div>
+    </div>
+    <div th:if="${thesaurus==null or thesaurus.isEmpty()}" class="text-center"><i>Словарь пока пуст</i></div>
+    <div th:if="${thesaurus!=null and !thesaurus.isEmpty()}">
+        <div th:each="unit:${thesaurus}">
+            <span class="thesaurus-name" th:text="${unit.name}"></span> -
+            <span th:attr="id=${'thesaurus_content_' + unit.id}" th:utext="${unit.content}"></span>
+            <div class="inline-elem" th:if="${isDisMaster}">
+                <div class="inline-elem" th:include="fragments/thesaurus_editor::thesaurus_editor(${unit})"></div>
+                <button th:onclick="'thesaurus_crud(\'delete\'' + ',' + ${unit.id} + ');'"
+                        type="button" class="btn btn-danger btn-xs"><span class="glyphicon glyphicon-trash"></span></button>
+            </div>
+        </div>
+    </div>
+    <div class="gap-bottom"></div>
+</div>
+</body>
+</html>

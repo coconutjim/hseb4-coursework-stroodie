@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <script th:src="@{/js/util/jquery.min.js}"></script>
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" th:href="@{/css/util/bootstrap.min.css}"/>
+    <!-- Latest compiled and minified JavaScript -->
+    <script th:src="@{/js/util/bootstrap.min.js}"></script>
+
+    <link rel="stylesheet" th:href="@{/css/general.css}"/>
+    <script th:src="@{/js/general.js}" ></script>
+
+    <link rel="stylesheet" th:href="@{/css/seminar.css}"/>
+
+    <title>Stroodie</title>
+</head>
+<body>
+<div th:include="fragments/navbar::navbar"></div>
+<div class="container">
+    <h1 class="text-center" th:text="${seminar.name}"></h1>
+    <div class="row">
+        <div class="col-sm-8 col-sm-offset-2">
+            <div th:with="master=${seminar.getMaster()}">
+                <div th:if="${master != null or (seminar.description != null and ! seminar.description.isEmpty())}">
+                    <div th:attr="class=${'text-center' + (isMaster ? ' gap-bottom' : '')}">
+                        <a href="#info_block"  data-toggle="collapse">Информация</a>
+                    </div>
+                </div>
+                <div id="info_block" class="collapse">
+                    <div th:if="${seminar.description != null and ! seminar.description.isEmpty()}">
+                        <b>Описание:</b> <span th:text="${seminar.description}"></span>
+                    </div>
+                    <div th:if="${master != null}">
+                        <b>Руководитель семинара: </b><span
+                            th:text="${master.firstName + ' ' + master.lastName}"></span>
+                    </div>
+                    <div th:if="${seminar.participations != null and !seminar.participations.isEmpty()}" class="gap-bottom">
+                        <b>Участники семинара: </b><span th:text="${seminar.getUserList()}"></span>
+                    </div>
+                </div>
+            </div>
+            <div th:if="${isMaster}" class="text-center">
+                <a th:href="@{/seminarAdmin/{id}(id=${seminar.id})}" class="btn btn-primary" role="button">Администрирование</a>
+            </div>
+        </div>
+    </div>
+
+    <div th:if="${seminar.discussions!=null and ! seminar.discussions.isEmpty()}"><div class="row">
+        <h3 class="text-center">Дискуссии семинара</h3>
+        <div class="col-sm-8 col-sm-offset-2">
+
+            <div class="row" th:each="discussion:${seminar.discussions}">
+                <div class="col-sm-12">
+                    <a th:href="@{/discussion/{id}(id=${discussion.id})}" class="no-dec-link">
+                        <div class="well clearfix discussion-item">
+                            <div class="discussion-title" th:text="${discussion.name}"></div>
+                            <div th:with="master=${discussion.getMaster()}">
+                                <div th:if="${master != null}">
+                                    <b>Руководитель дискуссии: </b><span
+                                        th:text="${master.firstName + ' ' + master.lastName}"></span>
+                                </div>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+            </div>
+
+        </div>
+    </div></div>
+
+    <div th:if="${seminar.discussions==null or seminar.discussions.isEmpty()}" class="text-center">
+        <h4>Дискуссии отсутствуют</h4>
+    </div>
+</div>
+</body>
+</html>

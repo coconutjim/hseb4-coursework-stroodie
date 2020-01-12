@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <meta name="_csrf" th:content="${_csrf.token}"/>
+    <!-- default header name is X-CSRF-TOKEN -->
+    <meta name="_csrf_header" th:content="${_csrf.headerName}"/>
+
+    <script th:src="@{/js/util/jquery.min.js}"></script>
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" th:href="@{/css/util/bootstrap.min.css}"/>
+    <!-- Latest compiled and minified JavaScript -->
+    <script th:src="@{/js/util/bootstrap.min.js}"></script>
+
+    <link rel="stylesheet" th:href="@{/css/general.css}"/>
+    <script th:src="@{/js/general.js}" ></script>
+    <script th:src="@{/js/registration.js}" ></script>
+
+    <title>Stroodie</title>
+</head>
+<body>
+<h3 class="text-center">Введите данные для регистрации</h3>
+<div class="col-sm-4 col-sm-offset-4">
+
+    <div class="gap-top"></div>
+    <label for="inputEmail" class="sr-only">Email</label>
+    <input type="text" id="inputEmail" class="form-control" placeholder="Email" />
+
+    <div class="gap-top"></div>
+    <label for="inputPassword" class="sr-only">Пароль</label>
+    <input type="password" id="inputPassword" class="form-control"
+           th:placeholder="${'Пароль (от ' + (T(controllers.Validation).PASSWORD_MIN_LENGTH) + ' до ' + (T(controllers.Validation).PASSWORD_MAX_LENGTH)} + ' символов)'" />
+
+    <div class="gap-top"></div>
+    <label for="inputPasswordConfirm" class="sr-only">Подвердите пароль</label>
+    <input type="password" id="inputPasswordConfirm" class="form-control" placeholder="Подтвердите пароль" />
+
+    <div class="gap-top"></div>
+    <label for="inputFirstName" class="sr-only">Имя</label>
+    <input type="text" id="inputFirstName" class="form-control"
+           th:placeholder="${'Имя (от ' + (T(controllers.Validation).FIRSTNAME_MIN_LENGTH) + ' до ' + (T(controllers.Validation).FIRSTNAME_MAX_LENGTH)} + ' символов)'" />
+
+    <div class="gap-top"></div>
+    <label for="inputLastName" class="sr-only">Фамилия</label>
+    <input type="text" id="inputLastName" class="form-control"
+           th:placeholder="${'Фамилия (от ' + (T(controllers.Validation).LASTNAME_MIN_LENGTH) + ' до ' + (T(controllers.Validation).LASTNAME_MAX_LENGTH)} + ' символов)'" />
+
+    <div id="reg_fb" class="well errors-div hidden"></div>
+
+    <div class="text-right gap-top">
+        <button class="btn btn-lg btn-primary submit-btn" onclick="register()">Регистрация</button>
+        <span class="gap-left"></span>
+        <a class="btn btn-lg btn-primary" th:href="@{/login}">Назад</a>
+    </div>
+
+</div>
+<span th:include="fragments/go_top_element::go_top"></span>
+</body>
+</html>

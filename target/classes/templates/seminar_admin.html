@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <meta name="_csrf" th:content="${_csrf.token}"/>
+    <!-- default header name is X-CSRF-TOKEN -->
+    <meta name="_csrf_header" th:content="${_csrf.headerName}"/>
+
+    <script th:src="@{/js/util/jquery.min.js}"></script>
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" th:href="@{/css/util/bootstrap.min.css}"/>
+    <!-- Latest compiled and minified JavaScript -->
+    <script th:src="@{/js/util/bootstrap.min.js}"></script>
+    <!-- Select 2  -->
+    <link rel="stylesheet" th:href="@{/css/util/select2.min.css}"/>
+    <script th:src="@{/js/util/select2.min.js}"></script>
+
+    <!-- Font awesome -->
+    <link rel="stylesheet" th:href="@{/css/util/font-awesome.min.css}"/>
+
+    <!-- Bootstrap-Iconpicker -->
+    <link rel="stylesheet" th:href="@{/css/util/bootstrap-iconpicker.min.css}"/>
+    <script th:src="@{/js/util/iconset-fontawesome-4.2.0.min.js}" ></script>
+    <script th:src="@{/js/util/bootstrap-iconpicker.min.js}" ></script>
+
+    <link rel="stylesheet" th:href="@{/css/general.css}"/>
+    <script th:src="@{/js/general.js}" ></script>
+    <script th:src="@{/js/seminar_admin.js}" ></script>
+    <script th:inline="javascript">
+        var tsJSON = [[${typesJSON}]];
+    </script>
+    <script th:src="@{/js/admin.js}" ></script>
+
+    <title>Stroodie</title>
+</head>
+<body>
+<div th:include="fragments/navbar::navbar"></div>
+<div class="container">
+    <div th:if="${param.success}" class="row">
+        <div class="col-sm-5 well success-div">Операция успешно завершена</div>
+    </div>
+    <a th:href="@{/seminar/{id}(id=${seminar.id})}"><h1 th:text="${'Семинар ' + seminar.name}"></h1></a>
+    <div th:include="fragments/seminar_editor::seminar_editor(${seminar})"></div>
+    <h2>Дискуссии</h2>
+    <div th:include="fragments/discussion_editor::discussion_editor(null, ${seminar})"></div>
+    <div th:if="${seminar.discussions != null}"><div class="row gap-top vertical-align" th:each="discussion:${seminar.discussions}">
+        <div class="col-sm-3"><a th:href="@{/discussion/{id}(id=${discussion.id})}" th:text="${discussion.name}" ></a></div>
+        <div class="col-sm-1" th:include="fragments/discussion_editor::discussion_editor(${discussion}, ${seminar})"></div>
+        <div class="col-sm-1">
+            <button th:onclick="'discussion_crud(\'delete\'' + ',' + ${seminar.id} + ',' + ${discussion.id} + ');'"
+                    type="button" class="btn btn-danger"><span class="glyphicon glyphicon-trash"></span></button>
+        </div>
+    </div></div>
+</div>
+<span th:include="fragments/go_top_element::go_top"></span>
+</body>
+</html>

@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+</head>
+<body>
+<div th:fragment="thesaurus_editor(unit)">
+    <div class="inline-elem" th:with="label_text=${unit==null ? 'Введение нового термина' : 'Изменение термина ' + unit.name},
+        main_id_text=${unit==null ? 'editor_thesaurus_new' : 'editor_thesaurus_' + unit.id},
+        id_text=${unit==null ? 'new' : unit.id}">
+
+        <!-- Кнопка вызова редактора -->
+        <button type="button" th:attr="class=${'btn btn-primary btn-xs'},
+            data-target=${'#' + main_id_text}" data-toggle="modal">
+            <span th:attr="class=${'glyphicon glyphicon-' + (unit==null ? 'plus' : 'edit')}"></span>
+        </button>
+
+        <!-- Модальное окно редактора -->
+        <div class="modal fade" th:attr="id=${main_id_text}" role="dialog" aria-labelledby="modal_label" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content text-left">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                        <h3 class="modal-title" th:attr="id=${'modal_label_thesaurus' + id_text}" th:text="${label_text}"></h3>
+                    </div>
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <label th:attr="for=${'thesaurus_name_' + id_text}">Термин:</label>
+                            <input type="text" class="form-control" th:attr="id=${'thesaurus_name_' + id_text},
+                        value=${unit==null ? '' : unit.name}"
+                                   th:placeholder="${'от ' + (T(controllers.Validation).THESAURUS_NAME_MIN_LENGTH) + ' до ' + (T(controllers.Validation).THESAURUS_NAME_MAX_LENGTH)} + ' символов'" />
+                            <div class="gap-top"></div>
+                            <label th:attr="for=${'thesaurus_def_sn_' + id_text}">Значение термина:</label>
+                            <div th:attr="id=${'thesaurus_def_sn_' + id_text}, data-id=${id_text}" class="thesaurus-def-sn"></div>
+
+                            <div class="well errors-div hidden" th:attr="id=${'thesaurus_fb_' + id_text}"></div>
+
+                        </div>
+                        <button th:onclick="'thesaurus_crud(\'' + ${unit==null? 'create' : 'update'} + '\',\'' + ${id_text} + '\');'"
+                                type="button" class="btn btn-primary">Сохранить</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

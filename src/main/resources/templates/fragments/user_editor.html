@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+</head>
+<body>
+<div th:fragment="user_editor(user)">
+
+        <!-- Кнопка вызова редактора -->
+        <button type="button" data-target="#editor_user" class="btn btn-primary" data-toggle="modal">
+            Изменить данные
+        </button>
+
+        <!-- Модальное окно редактора -->
+        <div class="modal fade" id="editor_user" role="dialog" aria-labelledby="modal_label" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content text-left">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                        <h3 class="modal-title" id="modal_lable_user">Изменение пользовательских данных</h3>
+                    </div>
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <label for="inputFirstName">Имя:</label>
+                            <input type="text" id="inputFirstName" class="form-control" th:attr="value=${currUser.firstName}"
+                                   th:placeholder="${'от ' + (T(controllers.Validation).FIRSTNAME_MIN_LENGTH) + ' до ' + (T(controllers.Validation).FIRSTNAME_MAX_LENGTH)} + ' символов'" />
+
+                            <div class="gap-top"></div>
+                            <label for="inputLastName">Фамилия:</label>
+                            <input type="text" id="inputLastName" class="form-control" th:attr="value=${currUser.lastName}"
+                                   th:placeholder="${'от ' + (T(controllers.Validation).LASTNAME_MIN_LENGTH) + ' до ' + (T(controllers.Validation).LASTNAME_MAX_LENGTH)} + ' символов'" />
+                            <div class="gap-top"></div>
+                            <div id="user_fb" class="well errors-div hidden"></div>
+                        </div>
+                        <button th:onclick="'update_user();'"
+                                type="button" class="btn btn-primary">Сохранить</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

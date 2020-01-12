@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+</head>
+<body>
+<div th:fragment="type_select(disId, prevId, prevName, types)">
+
+        <!-- Кнопка вызова редактора -->
+        <button type="button" class="btn btn-primary" data-toggle="modal" th:attr="data-target=${'#mes_answer_' + prevId}">
+            <span class="glyphicon glyphicon-arrow-right"></span>
+        </button>
+
+        <!-- Модальное окно редактора -->
+        <div class="modal fade" th:attr="id=${'mes_answer_' + prevId}" role="dialog" aria-labelledby="modal_label" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                        <h3 class="modal-title text-left" id="modal_label">Выберите тип ответа</h3>
+                    </div>
+                    <div class="modal-body">
+                        <div th:if="${types==null or types.isEmpty()}">
+                            К сожалению, на это сообщение ответы не предусмотрены
+                        </div>
+                        <div th:if="${types!=null and ! types.isEmpty()}">
+                            <div th:each="ts:${types}">
+                                <div th:if="${ts!=null and ! ts.isEmpty()}">
+                                    <div class="row gap-bottom">
+                                        <div th:each="t:${ts}" class="col-sm-3 text-center">
+                                            <button type="button" class="btn btn-primary btn-lg btn-sq"
+                                                    th:onclick="'show_editor(\'create\',\'' + ${message.id} +
+                                                    '\',\'' + ${prevId} + '\',\'' + ${t.id} + '\',\'' + ${t.name} + '\',\'' + ${prevName} + '\');'">
+                                                <span th:attr="class=${t.iconName}"></span>
+                                            </button>
+                                            <div th:text="${t.name}"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+</div>
+</body>
+</html>
