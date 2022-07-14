@@ -3,7 +3,7 @@
 ## Features
 1. Forum-like interface
 2. Strictly typed messages (ideas/questions/"+" and "-" arguments) with limited ways of connection between them; types and connections can be customized
-3. Automatic discussion visualization via mind map with the possibility to navigate through messages and create unions
+3. Automatic discussion visualization via mind map, with the possibility to navigate through messages and create unions
 4. Topic creation and management, different user permissions
 5. Notifications
 ## Technology
